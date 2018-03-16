@@ -7,6 +7,6 @@ public class userOfVisualizer {
         System.out.println("hai");
         nQueensVisualizer visualizer = new nQueensVisualizer(8);
         int[][] test = new int[8][8];
-        visualizer.updateBoard(test);
+        visualizer.addBoardToQueue(test);
     }
 }

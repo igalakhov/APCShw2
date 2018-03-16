@@ -17,7 +17,7 @@ public class nQueensVisualizer{
         jp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jp.setVisible(true);
     }
-    public void updateBoard(int[][] newBoard){
+    public void addBoardToQueue(int[][] newBoard){
         //create a copy of the board
         int[][] toAdd = new int[size][size];
         for(int i = 0; i < size; i++){
