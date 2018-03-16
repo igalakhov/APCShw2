@@ -7,6 +7,7 @@ import java.util.List;
 public class nQueensSolver {
     private int[][] board;
     private int[] queenPositions;
+    private nQueensVisualizer abc;
     /*
        Algorithm
        0. Randomly place all queens in each row
@@ -18,6 +19,7 @@ public class nQueensSolver {
        this(8);
     }
     public nQueensSolver(int size){
+        abc = new nQueensVisualizer(size);
         if(size < 4){
             size = 4;
         }
@@ -91,6 +93,7 @@ public class nQueensSolver {
         int iterNum = 0;
         int lastMoved = -1;
         while(true){
+            abc.updateBoard(board);
             //break if we solved everything
             if(countAllAttacks() == 0){
                 break;

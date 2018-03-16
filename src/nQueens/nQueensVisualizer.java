@@ -1,4 +1,4 @@
-package nQueensVisualizer;
+package nQueens;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -27,28 +27,20 @@ public class nQueensVisualizer{
         }
         board.addBoard(toAdd);
     }
-    public void updateRefreshRate(int newRate){
-        board.updateRefreshRate(newRate);
-    }
     private static class Chessboard extends Canvas implements Runnable{
         private int size;
         private ArrayList<int[][]> layoutQueue;
-        private int[][] curLayout;
+        public int[][] curLayout;
         private int squareWidth;
         private int squareHeight;
-        private int refreshRate;
         public Chessboard(int size){
             this.size = size; //haha yes
             squareWidth = this.getWidth()/size;
             squareHeight = this.getHeight()/size;
             curLayout = new int[size][size];
             layoutQueue = new ArrayList<>();
-            refreshRate = 250;
             Thread u = new Thread(this);
             u.start();
-        }
-        public void updateRefreshRate(int newRate){
-            refreshRate = newRate;
         }
         public void addBoard(int[][] newBoard){
             layoutQueue.add(newBoard);
@@ -64,7 +56,7 @@ public class nQueensVisualizer{
         public void run(){
             while(true){
                 try{
-                    Thread.sleep(refreshRate);
+                    Thread.sleep(250);
                 } catch (InterruptedException e) {}
                 nextBoard();
                 repaint();
@@ -183,4 +175,5 @@ public class nQueensVisualizer{
             }
         }
     }
+
 }
