@@ -44,8 +44,8 @@ public class Cell {
     Index is based on the walls boolean[]
     0 <= index <= 3
     */
-    public void setWall(int index, boolean val){
-        walls[index] = val;
+    public void removeWall(int index){
+        walls[index] = false;
     }
     /*
     returns wall value
@@ -61,5 +61,8 @@ public class Cell {
     }
     public boolean isVisited(){
         return visited;
+    }
+    public void unvisit(){
+        visited = false;
     }
 }

@@ -5,7 +5,8 @@ import mazeSolver.mazeUtil.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferStrategy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 
 public class MazeVisualizer {
@@ -14,69 +15,100 @@ public class MazeVisualizer {
     public MazeVisualizer(Maze toVisualize){
         loadedMaze = new VisualMaze(toVisualize);
 
-        JFrame jp = new JFrame();
+        JFrame jp = new JFrame("( ͡° ͜ʖ ͡°) aren't mazes aMAZing? ( ͡° ͜ʖ ͡°)");
         jp.getContentPane().add(loadedMaze, BorderLayout.CENTER);
         jp.setSize(800, 800);
         jp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jp.setVisible(true);
 
     }
-
-
+    public void saveSnippet(){
+        loadedMaze.saveSnippet();
+    }
     //internal maze
     //this is the actual operational class
-    private static class VisualMaze extends Canvas implements Runnable{
-        //maze cell width and height
-        private int cellWidth, cellHeight;
-        //loaded maze
+    private static class VisualMaze extends JPanel implements Runnable{
         private Maze loadedMaze;
-        /*
-            Create new visual maze
-         */
-        public VisualMaze(Maze toVisualize){
-            //copy maze
-            loadedMaze = toVisualize;
+        private Color[][] curLayout;
+        private int cellWidth, cellHeight;
+        private List<Color[][]> mazeQueue;
 
-            //find cell dimentions from beginning
+        public VisualMaze(Maze toVisualize){
+            //save thread
+            loadedMaze = toVisualize;
+            mazeQueue = new ArrayList<>();
+            saveSnippet();
+
+            //set size
+            this.setSize(800, toVisualize.getHeight() * 800);
+
+            //get components
             cellWidth = this.getWidth()/loadedMaze.getWidth();
             cellHeight = this.getHeight()/loadedMaze.getHeight();
-            //start thread
+            System.out.println(cellWidth + ", " + cellHeight);
+            System.out.println(getHeight());
+
+            //thread
             Thread u = new Thread(this);
             u.start();
         }
-        @Override
-        public void paint(Graphics g){
-            super.paint(g);
-            //update dimentions
+        public void saveSnippet(){
+            mazeQueue.add(loadedMaze.copyColors());
+        }
+        public void paintComponent(Graphics g) {
+            //clear
+            super.paintComponent(g);
+
+            //update components
             cellWidth = this.getWidth()/loadedMaze.getWidth();
             cellHeight = this.getHeight()/loadedMaze.getHeight();
 
-            drawMazeWalls(g);
+            //draw maze cells
+            drawCells(g);
         }
-        public void drawMazeWalls(Graphics g){
-            for(int row = 0; row < loadedMaze.getWidth(); row++){
-                for(int col = 0; col < loadedMaze.getHeight(); col++){
-                    Cell curCell = loadedMaze.getCell(row, col);
+        public void drawCells(Graphics g){
+            for(int x = 0; x < loadedMaze.getWidth(); x++){
+                for(int y = 0; y < loadedMaze.getHeight(); y++){
+                    Cell curCell = loadedMaze.getCell(x, y);
+                    //draw walls
+                    g.setColor(curLayout[x][y]);
+                    g.fillRect(x * cellWidth, y * cellHeight,  cellWidth, cellHeight);
                     g.setColor(Color.BLACK);
-                    if(Math.random() > 0.5){
-                        g.setColor(Color.RED);
+                    g.fillRect(x * cellWidth, y * cellHeight,  cellWidth/3 + 1, cellHeight/3 + 1);
+                    g.fillRect(x * cellWidth + (2 * cellWidth/3), y * cellHeight,  cellWidth/3 + 1, cellHeight/3 + 1);
+                    g.fillRect(x * cellWidth + (2 * cellWidth/3), y * cellHeight + (2 * cellHeight/3),  cellWidth/3 + 1, cellHeight/3 + 1);
+                    g.fillRect(x * cellWidth, y * cellHeight + (2 * cellHeight/3),  cellWidth/3 + 1, cellHeight/3 + 1);
+                    if(curCell.getWall(0)){
+                        g.fillRect(x * cellWidth + cellWidth/3, y * cellHeight,  cellWidth/3 + 1, cellHeight/3 + 1);
                     }
-                    g.drawRect(row*cellWidth, col*cellHeight,
-                            cellWidth, cellHeight);
+                    if(curCell.getWall(1)){
+                        g.fillRect(x * cellWidth + (2 * cellWidth/3), y * cellHeight + cellHeight/3,  cellWidth/3 + 1, cellHeight/3 + 1);
+                    }
+                    if(curCell.getWall(2)){
+                        g.fillRect(x * cellWidth + cellWidth/3, y * cellHeight + (2 * cellHeight/3),  cellWidth/3 + 1, cellHeight/3 + 1);
+                    }
+                    if(curCell.getWall(3)){
+                        g.fillRect(x * cellWidth, y * cellHeight + cellHeight/3,  cellWidth/3 + 1, cellHeight/3 + 1);
+
+                    }
                 }
             }
         }
         public void run(){
-            this.createBufferStrategy(2);
-            BufferStrategy strategy = this.getBufferStrategy();
+            //try{Thread.sleep(1000);}catch(InterruptedException e){};
             while(true){
-                try{
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {}
-                if(strategy != null) {
-                    paint(getGraphics());
+                if(mazeQueue.size() != 0){
+                    curLayout = mazeQueue.get(0);
+                    mazeQueue.remove(0);
+                }
+                repaint();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
+
     }
 }
