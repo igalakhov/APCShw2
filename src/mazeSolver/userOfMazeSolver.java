@@ -14,7 +14,7 @@ public class userOfMazeSolver {
         int testId = 0;
         switch(testId){
             case 0:
-                int size = 100;
+                int size = 1;
                 Maze tempMaze = mazeGenerator.GenerateMaze(size, size);
                 MazeVisualizer tempVisualizer = new MazeVisualizer(tempMaze);
                 MazeSolver.solveMaze(tempMaze, new Position(0, 0), new Position(size - 1, size - 1), tempVisualizer);

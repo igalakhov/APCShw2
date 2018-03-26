@@ -103,7 +103,7 @@ public class MazeVisualizer {
                 }
                 repaint();
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

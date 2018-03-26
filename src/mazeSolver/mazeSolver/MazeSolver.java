@@ -27,14 +27,14 @@ public class MazeSolver {
             } else {
                 Position randomMove = avaliable[new Random().nextInt(avaliable.length)];
                 toSolve.visit(randomMove.getX(), randomMove.getY());
-                toSolve.setCellColor(randomMove.getY(), randomMove.getX(), Color.blue);
+                toSolve.setCellColor(randomMove.getY(), randomMove.getX(), new Color(100, 250, 160));
                 tempStack.push(randomMove);
             }
             visualizer.saveSnippet();
 
         }
 
-        System.out.println("hi");
+        System.out.println("Itsa done");
 
 
         return null;
